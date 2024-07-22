@@ -4,11 +4,15 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.io.File;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,13 +24,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        for (String s : Font.getFontNames()) {
-            System.out.println(s);
-        }
-        Text time = new Text("09:30");
+        File file = new File("sound.mp3");
+        String path=  new File(file.getAbsolutePath()).toURI().toString();
+        Media media= new Media(path);
+        MediaPlayer player = new MediaPlayer(media);
+        Text time = new Text();
         time.setFont(new Font("Lucida Bright Demibold", 120));
         time.setFill(Color.WHITE);
-        Text date = new Text("Thu 12 Jun 23");
+        Text date = new Text();
         date.setFont(new Font("Monospaced Bold", 45));
         date.setFill(Color.CRIMSON);
         VBox root = new VBox(5, time, date);
@@ -36,9 +41,15 @@ public class Main extends Application {
         window.setTitle("clock");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM yyyy");
-        Timeline liner = new Timeline(new KeyFrame(Duration.seconds(0.5), event -> {
-            time.setText(timeFormat.format(new Date()));
+        Timeline liner = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            String fullTime = timeFormat.format(new Date());
+            time.setText(fullTime);
             date.setText(dateFormat.format(new Date()).toUpperCase());
+            String[] times =fullTime.split(":");
+            if (times[1].equalsIgnoreCase("00")){
+                player.stop();
+                player.play();
+            }
         }));
         liner.setCycleCount(Timeline.INDEFINITE);
         liner.play();
