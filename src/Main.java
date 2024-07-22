@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Main extends Application {
+     boolean played = false;
     public static void main(String[] args) {
         launch(args);
     }
@@ -46,9 +47,12 @@ public class Main extends Application {
             time.setText(fullTime);
             date.setText(dateFormat.format(new Date()).toUpperCase());
             String[] times =fullTime.split(":");
-            if (times[1].equalsIgnoreCase("00")){
+            if (times[1].equalsIgnoreCase("00") && !played){
                 player.stop();
                 player.play();
+                played = true;
+            }else if (!times[1].equalsIgnoreCase("00")){
+                played =false;
             }
         }));
         liner.setCycleCount(Timeline.INDEFINITE);
